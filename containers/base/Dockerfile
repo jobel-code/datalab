@@ -95,7 +95,7 @@ RUN echo "deb-src http://ftp.us.debian.org/debian testing main" >> /etc/apt/sour
         pygments==2.1.3 \
         python-dateutil==2.5.0 \
         python-snappy==0.5.1 \
-        pytz==2016.7 \
+        pytz==2018.4 \
         pyzmq==17.1.0 \
         requests==2.18.4 \
         scikit-image==0.13.0 \
@@ -112,9 +112,9 @@ RUN echo "deb-src http://ftp.us.debian.org/debian testing main" >> /etc/apt/sour
     source activate $PYTHON_2_ENV && \
     pip install --quiet -U --upgrade-strategy only-if-needed --no-cache-dir \
         apache-airflow==1.9.0 \
+        apache-beam[gcp]==2.7.0 \
         bs4==0.0.1 \
         ggplot==0.6.8 \
-        google-cloud-dataflow==2.0.0 \
         google-cloud-monitoring==0.28.0 \
         lime==0.1.1.23 \
         protobuf==3.5.2 \
@@ -153,7 +153,7 @@ RUN echo "deb-src http://ftp.us.debian.org/debian testing main" >> /etc/apt/sour
         pygments==2.1.3 \
         python-dateutil==2.5.0 \
         python-snappy==0.5.1 \
-        pytz==2016.7 \
+        pytz==2018.4 \
         pyzmq==17.1.0 \
         requests==2.18.4 \
         scikit-image==0.13.0 \
@@ -246,7 +246,7 @@ RUN if [ -d /datalab/lib/pydatalab/.git ]; then \
         git clone https://github.com/googledatalab/pydatalab.git /datalab/lib/pydatalab; \
     fi && \
     cd /datalab/lib/pydatalab && \
-    /tools/node/bin/npm install -g typescript && \
+    /tools/node/bin/npm install -g typescript@3.0.3 && \
     tsc --module amd --noImplicitAny --outdir datalab/notebook/static datalab/notebook/static/*.ts && \
     tsc --module amd --noImplicitAny --outdir google/datalab/notebook/static google/datalab/notebook/static/*.ts && \
     /tools/node/bin/npm uninstall -g typescript && \
