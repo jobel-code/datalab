@@ -24,7 +24,10 @@ EXPOSE 8080
 
 # Path configuration
 ENV DATALAB_CONDA_DIR /usr/local
-ENV PATH $PATH:/tools/node/bin:/tools/google-cloud-sdk/bin:$DATALAB_CONDA_DIR/bin
+# AquaBiota requirements
+ENV GDAL_DATA $DATALAB_CONDA_DIR/share/gdal/
+ENV GEOS_DIR $DATALAB_CONDA_DIR
+ENV PATH $PATH:/tools/node/bin:/tools/google-cloud-sdk/bin:$DATALAB_CONDA_DIR/bin:$GDAL_DATA
 
 ENV PYTHON_2_ENV py2env
 ENV PYTHON_3_ENV py3env
@@ -32,7 +35,7 @@ ENV PYTHON_3_ENV py3env
 # Needed to run "source" for switching Conda environments.
 SHELL ["/bin/bash", "-c"]
 
-# Setup OS and core packages
+# Setup OS and core packages //UPDATED
 RUN echo "deb-src http://ftp.us.debian.org/debian testing main" >> /etc/apt/sources.list && \
     apt-get update -y && \
     apt-get install -y -q debian-archive-keyring debian-keyring && \
@@ -46,17 +49,31 @@ RUN echo "deb-src http://ftp.us.debian.org/debian testing main" >> /etc/apt/sour
         openssh-client \
         pkg-config \
         unzip \
-        wget \
-        zip && \
-    mkdir -p /tools && \
+        zip \
+        ed \
+        less \
+        locales \
+        vim-tiny \
+        fonts-texgyre \
+        fonts-dejavu \
+        tzdata \
+        gfortran \
+        gcc \
+        python-zmq \
+        libatlas-base-dev liblapack-dev libfreetype6-dev libxft-dev libxml2-dev libpng-dev wget\
+        libsnappy-dev python-dev python-setuptools \
+        libssl-dev && \
+        mkdir -p /tools && \
 # Save GPL source packages
     mkdir -p /srcs && \
     cd /srcs && \
     apt-get source -d wget git python-zmq ca-certificates pkg-config libpng-dev && \
     cd / && \
+
 # Set our locale to en_US.UTF-8.
     locale-gen en_US.UTF-8 && \
     update-locale LANG=en_US.UTF-8 && \
+
 # Install MiniConda, set up Python 2.7 Conda env, and install packages.
     wget --quiet -O ~/miniconda.sh \
     http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh && \
@@ -65,15 +82,18 @@ RUN echo "deb-src http://ftp.us.debian.org/debian testing main" >> /etc/apt/sour
     rm ~/miniconda.sh && \
     conda update conda --quiet --yes && \
     conda config --system --append channels conda-forge && \
+    conda config --system --append channels IOOS && \
+    conda config --system --append channels r && \
     conda config --system --set show_channel_urls true && \
     conda update --all --quiet --yes && \
+
     conda create --yes --quiet --name $PYTHON_2_ENV python=2.7 \
         crcmod==1.7 \
         dask==0.17.1 \
         dill==0.2.6 \
         future==0.16.0 \
         futures==3.2.0 \
-        google-api-python-client==1.6.2 \
+        google-api-python-client==1.6.7 \
         httplib2==0.10.3 \
         h5py==2.7.1 \
         ipykernel==4.8.2 \
@@ -97,6 +117,7 @@ RUN echo "deb-src http://ftp.us.debian.org/debian testing main" >> /etc/apt/sour
         python-snappy==0.5.1 \
         pytz==2018.4 \
         pyzmq==17.1.0 \
+        pyyaml==3.13 \
         requests==2.18.4 \
         scikit-image==0.13.0 \
         scikit-learn==0.19.1 \
@@ -124,48 +145,48 @@ RUN echo "deb-src http://ftp.us.debian.org/debian testing main" >> /etc/apt/sour
     conda clean -tipsy && \
 # This var needs to be unset before installing the Python3 Conda env to
 # avoid subtle dependency issues.
-    unset OLDPWD && \
-# Set up Python 3.5 Conda env and install packages.
-    conda create --yes --quiet --name $PYTHON_3_ENV python=3.5 \
+    unset OLDPWD
+# Set up Python 3.6 Conda env and install packages.
+RUN  conda create --yes --quiet --name $PYTHON_3_ENV python=3.6 \
         crcmod==1.7 \
-        dask==0.17.1 \
-        dill==0.2.6 \
-        google-api-python-client==1.6.2 \
-        httplib2==0.10.3 \
-        h5py==2.7.1 \
-        ipykernel==4.8.2 \
-        ipywidgets==7.2.1 \
-        jinja2==2.8 \
+        dask==0.19.4 \
+        dill==0.2.8.2 \
+        google-api-python-client==1.6.7 \
+        httplib2==0.11.3 \
+        h5py==2.8.0 \
+        ipykernel==5.1.0 \
+        ipywidgets==7.4.2 \
+        jinja2==2.10 \
         jsonschema==2.6.0 \
-        matplotlib==2.1.2 \
+        matplotlib==3.0.0 \
         mock==2.0.0 \
-        nltk==3.2.1 \
-        notebook==5.6.0 \
-        numpy==1.14.0 \
-        oauth2client==2.2.0 \
-        pandas-gbq==0.3.0 \
-        pandas==0.22.0 \
+        nltk==3.2.5 \
+        notebook==5.7.0 \
+        numpy==1.15.3 \
+        oauth2client==4.1.2 \
+        pandas-gbq==0.7.0 \
+        pandas==0.23.4 \
         pandocfilters==1.4.2 \
-        pillow==5.0.0 \
-        pip==18.0 \
-        plotly==1.12.5 \
-        psutil==4.3.0 \
-        pygments==2.1.3 \
-        python-dateutil==2.5.0 \
-        python-snappy==0.5.1 \
-        pytz==2018.4 \
-        pyzmq==17.1.0 \
-        requests==2.18.4 \
-        scikit-image==0.13.0 \
-        scikit-learn==0.19.1 \
-        scipy==1.0.0 \
-        seaborn==0.7.0 \
+        pillow==5.3.0 \
+        pip==18.1 \
+        plotly==3.3.0 \
+        psutil==5.4.7 \
+        pygments==2.2.0 \
+        python-dateutil==2.7.3 \
+        python-snappy==0.5.3 \
+        pytz==2018.6 \
+        pyzmq==17.1.2 \
+        requests==2.20.0 \
+        scikit-image==0.14.1 \
+        scikit-learn==0.20.0 \
+        scipy==1.1.0 \
+        seaborn==0.9.0 \
         six==1.11.0 \
-        statsmodels==0.8.0 \
-        sympy==0.7.6.1 \
-        tornado==4.5.1 \
-        widgetsnbextension==3.2.1 \
-        xgboost==0.6a2 && \
+        statsmodels==0.9.0 \
+        sympy==1.3 \
+        tornado==5.1.1 \
+        widgetsnbextension==3.4.2 \
+        xgboost==0.80  && \
 # Install Python3 packages that aren't available or up-to-date in Conda.
     source activate $PYTHON_3_ENV && \
     pip install --quiet -U --upgrade-strategy only-if-needed --no-cache-dir \
@@ -175,7 +196,8 @@ RUN echo "deb-src http://ftp.us.debian.org/debian testing main" >> /etc/apt/sour
         google-cloud-monitoring==0.28.0 \
         lime==0.1.1.23 \
         protobuf==3.5.2 \
-        tensorflow==1.8.0 && \
+        tensorflow==1.8.0 \
+        s2sphere==0.2.5 && \
 # Make pip3 a copy of pip for the Python 3 environment.
     cp /usr/local/envs/py3env/bin/pip /usr/local/envs/py3env/bin/pip3 && \
     source deactivate && \
@@ -232,6 +254,31 @@ RUN echo "deb-src http://ftp.us.debian.org/debian testing main" >> /etc/apt/sour
 
 ENV LANG en_US.UTF-8
 
+# Careful gdal has conflicts with fiona and rasterio
+RUN conda install --name $PYTHON_3_ENV --quiet -c conda-forge --yes gdal && \
+conda install --name $PYTHON_3_ENV -c conda-forge --quiet --yes \
+geopandas \
+scipy-sugar \
+tinydb \
+bcrypt \
+passlib \
+libgdal \
+geopy \
+folium \
+rasterio \
+ipyleaflet \
+bqplot \
+cmocean \
+cartopy \
+iris \
+shapely \
+pyproj \
+fiona \
+xmltodict
+
+#RUN conda install --name $PYTHON_3_ENV  -c conda-forge --quiet --yes 'r-base=3.5.1' && \
+#conda install --name $PYTHON_3_ENV -c conda-forge --quiet --yes 'r-irkernel'
+
 # Copy local configuration files
 COPY config/ipython.py /etc/ipython/ipython_config.py
 COPY config/nbconvert.py /etc/jupyter/jupyter_notebook_config.py
@@ -264,6 +311,9 @@ RUN if [ -d /datalab/lib/pydatalab/.git ]; then \
     pip install --upgrade-strategy only-if-needed /datalab/lib/pydatalab/solutionbox/image_classification/. && \
     pip install --upgrade-strategy only-if-needed /datalab/lib/pydatalab/solutionbox/structured_data/. && \
     pip install --upgrade-strategy only-if-needed jupyter_highlight_selected_word==0.2.0 && \
+    pip install --upgrade-strategy only-if-needed jupyter_nbextensions_configurator jupyter_contrib_nbextensions && \
+    jupyter contrib nbextension install --user && \
+    jupyter nbextensions_configurator enable --user  && \
     jupyter nbextension install --py datalab.notebook && \
     jupyter nbextension install --py google.datalab.notebook && \
     jupyter nbextension install --py jupyter_highlight_selected_word && \
@@ -275,7 +325,7 @@ RUN if [ -d /datalab/lib/pydatalab/.git ]; then \
 # Set up correct paths for nbconvert
     mkdir -p /datalab/nbconvert && \
     cp -R /usr/local/share/jupyter/nbextensions/gcpdatalab/* /datalab/nbconvert && \
-    ln -s $DATALAB_CONDA_DIR/envs/$PYTHON_3_ENV/lib/python3.5/site-packages/notebook/static/custom/custom.css /datalab/nbconvert/custom.css
+    ln -s $DATALAB_CONDA_DIR/envs/$PYTHON_3_ENV/lib/python3.6/site-packages/notebook/static/custom/custom.css /datalab/nbconvert/custom.css
 
 COPY config/py2-kernel.json $DATALAB_CONDA_DIR/envs/$PYTHON_3_ENV/share/jupyter/kernels/python2/kernel.json
 COPY config/py3-kernel.json $DATALAB_CONDA_DIR/envs/$PYTHON_3_ENV/share/jupyter/kernels/python3/kernel.json

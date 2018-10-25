@@ -1,0 +1,65 @@
+# Use this file to create a new docker image derived from the standard datalab image
+
+FROM gcr.io/cloud-datalab/datalab:latest
+MAINTAINER AquaBiota <mapcloud@aquabiota.se>
+
+
+ENV R_BASE_VERSION 3.5.1
+
+
+RUN conda install --name $PYTHON_3_ENV  -c conda-forge --quiet --yes \
+r-base \
+r-irkernel \
+r-irdisplay \
+r-pbdzmq \
+r-uuid \
+r-digest \
+r-rgdal \
+rpy2 \
+r-plyr \
+r-devtools \
+r-tidyverse \
+r-shiny \
+r-rmarkdown \
+r-forecast \
+r-rsqlite \
+r-reshape2 \
+r-caret \
+r-rcurl \
+r-crayon \
+r-randomforest \
+r-htmltools \
+r-sparklyr \
+r-htmlwidgets \
+r-hexbin \
+r-rzmq  \
+r-ggplot2 \
+r-nloptr  \
+r-broom  \
+r-dplyr  \
+r-spatial  \
+r-jsonlite  \
+r-stringr  \
+r-data.table \
+r-hmisc \
+r-car \
+r-psych  \
+r-mgcv  \
+r-rocr \
+r-raster  \
+r-leaflet  \
+r-proc  \
+r-nnet  \
+r-rpart  \
+r-mass \
+r-repr  \
+r-irdisplay  \
+r-ggthemes  \
+r-sqldf  \
+r-geosphere  \
+r-xml  \
+r-xml2  \
+r-abind  \
+r-gbm  \
+r-gam  \
+r-gamlss
