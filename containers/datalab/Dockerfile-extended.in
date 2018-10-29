@@ -3,63 +3,68 @@
 FROM gcr.io/cloud-datalab/datalab:latest
 MAINTAINER AquaBiota <mapcloud@aquabiota.se>
 
+# AquaBiota requirements
+ENV GDAL_DATA $DATALAB_CONDA_DIR/share/gdal/
+ENV GEOS_DIR $DATALAB_CONDA_DIR
+ENV PATH $PATH:$GDAL_DATA
 
 ENV R_BASE_VERSION 3.5.1
 
 
-RUN conda install --name $PYTHON_3_ENV  -c conda-forge --quiet --yes \
-r-base \
-r-irkernel \
-r-irdisplay \
-r-pbdzmq \
-r-uuid \
-r-digest \
-r-rgdal \
-rpy2 \
-r-plyr \
-r-devtools \
-r-tidyverse \
-r-shiny \
-r-rmarkdown \
-r-forecast \
-r-rsqlite \
-r-reshape2 \
-r-caret \
-r-rcurl \
-r-crayon \
-r-randomforest \
-r-htmltools \
-r-sparklyr \
-r-htmlwidgets \
-r-hexbin \
-r-rzmq  \
-r-ggplot2 \
-r-nloptr  \
-r-broom  \
-r-dplyr  \
-r-spatial  \
-r-jsonlite  \
-r-stringr  \
-r-data.table \
-r-hmisc \
-r-car \
-r-psych  \
-r-mgcv  \
-r-rocr \
-r-raster  \
-r-leaflet  \
-r-proc  \
-r-nnet  \
-r-rpart  \
-r-mass \
-r-repr  \
-r-irdisplay  \
-r-ggthemes  \
-r-sqldf  \
-r-geosphere  \
-r-xml  \
-r-xml2  \
-r-abind  \
-r-gbm  \
-r-gam  \
-r-gamlss
+RUN apt-get -y update && apt-get -y dist-upgrade && \
+apt-get install -y --no-install-recommends \
+ed \
+fonts-texgyre \
+fonts-dejavu \
+gfortran \
+gcc \
+less \
+libatlas-base-dev \
+liblapack-dev \
+libcurl4-gnutls-dev \
+libpng-dev \
+libsnappy-dev \
+libssl-dev \
+libxft-dev \
+libxml2-dev \
+libssl-dev \
+python-dev \
+python-setuptools \
+python-zmq \
+tzdata \
+vim-tiny \
+ && conda config --system --append channels IOOS \
+ && conda config --system --append channels r \
+ && conda install --name $PYTHON_3_ENV --quiet -c conda-forge --yes gdal && \
+conda install --name $PYTHON_3_ENV -c conda-forge --quiet --yes \
+fiona \
+folium \
+geopandas \
+scipy-sugar \
+tinydb \
+bcrypt \
+passlib \
+libgdal \
+geopy \
+rasterio \
+ipyleaflet \
+bqplot \
+cmocean \
+cartopy \
+iris \
+shapely \
+pyproj \
+pyyaml \
+xmltodict \
+jupyterlab \
+&& source activate $PYTHON_3_ENV \
+&& pip install --upgrade-strategy only-if-needed s2sphere \
+&& pip install --upgrade-strategy only-if-needed jupyter_nbextensions_configurator jupyter_contrib_nbextensions && \
+    jupyter contrib nbextension install --user && \
+    jupyter nbextensions_configurator enable --user  && \
+
+    conda install -c conda-forge --quiet --yes r-base r-irkernel r-irdisplay r-pbdzmq r-uuid r-digest r-rgdal r-plyr r-devtools r-tidyverse r-shiny r-rmarkdown r-forecast r-rsqlite r-reshape2 r-caret r-rcurl r-crayon r-randomforest r-htmltools r-sparklyr r-htmlwidgets r-hexbin r-rzmq  r-ggplot2 r-nloptr  r-broom  r-dplyr  r-spatial  r-jsonlite  r-stringr  r-data.table r-hmisc r-car r-psych  r-mgcv  r-rocr r-raster  r-leaflet  r-proc  r-nnet  r-rpart  r-mass r-repr  r-ggthemes  r-sqldf  r-geosphere  r-xml  r-xml2  r-abind  r-gbm  r-gam  r-gamlss r-rjsonio \
+
+&& conda install rpy2
+
+# RUN R -e 'install.packages("biomod2", repos="http://R-Forge.R-project.org")'
