@@ -57,14 +57,18 @@ pyproj \
 pyyaml \
 xmltodict \
 jupyterlab \
+google-api-python-client \
 && source activate $PYTHON_3_ENV \
-&& pip install --upgrade-strategy only-if-needed s2sphere \
+&& pip install --upgrade-strategy only-if-needed s2sphere google\
 && pip install --upgrade-strategy only-if-needed jupyter_nbextensions_configurator jupyter_contrib_nbextensions && \
     jupyter contrib nbextension install --user && \
     jupyter nbextensions_configurator enable --user  && \
 
-    conda install -c conda-forge --quiet --yes r-base r-irkernel r-irdisplay r-pbdzmq r-uuid r-digest r-rgdal r-plyr r-devtools r-tidyverse r-shiny r-rmarkdown r-forecast r-rsqlite r-reshape2 r-caret r-rcurl r-crayon r-randomforest r-htmltools r-sparklyr r-htmlwidgets r-hexbin r-rzmq  r-ggplot2 r-nloptr  r-broom  r-dplyr  r-spatial  r-jsonlite  r-stringr  r-data.table r-hmisc r-car r-psych  r-mgcv  r-rocr r-raster  r-leaflet  r-proc  r-nnet  r-rpart  r-mass r-repr  r-ggthemes  r-sqldf  r-geosphere  r-xml  r-xml2  r-abind  r-gbm  r-gam  r-gamlss r-rjsonio \
+    conda install -c conda-forge --quiet --yes google-api-python-client r-base r-irkernel r-irdisplay r-pbdzmq r-uuid r-digest r-rgdal r-plyr r-devtools r-tidyverse r-shiny r-rmarkdown r-forecast r-rsqlite r-reshape2 r-caret r-rcurl r-crayon r-randomforest r-htmltools r-sparklyr r-htmlwidgets r-hexbin r-rzmq  r-ggplot2 r-nloptr  r-broom  r-dplyr  r-spatial  r-jsonlite  r-stringr  r-data.table r-hmisc r-car r-psych  r-mgcv  r-rocr r-raster  r-leaflet  r-proc  r-nnet  r-rpart  r-mass r-repr  r-ggthemes  r-sqldf  r-geosphere  r-xml  r-xml2  r-abind  r-gbm  r-gam  r-gamlss r-rjsonio r-dt\
 
 && conda install rpy2
 
-# RUN R -e 'install.packages("biomod2", repos="http://R-Forge.R-project.org")'
+COPY rpackages.R $DATALAB_CONDA_DIR/rpackages.R
+RUN echo "source /usr/local/rpackages.R"
+
+# RUN R -e 'install.packages("biomod2", dependencies = TRUE)'
