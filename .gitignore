@@ -26,3 +26,4 @@ sources/web/datalab/static/experimental
 polymer_bundled
 polymer_unbundled
 sources/web/datalab/polymer/**/*.js
+Dockerfile-*

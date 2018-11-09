@@ -126,46 +126,46 @@ RUN echo "deb-src http://ftp.us.debian.org/debian testing main" >> /etc/apt/sour
 # avoid subtle dependency issues.
     unset OLDPWD && \
 # Set up Python 3.5 Conda env and install packages.
-    conda create --yes --quiet --name $PYTHON_3_ENV python=3.5 \
-        crcmod==1.7 \
-        dask==0.17.1 \
-        dill==0.2.6 \
-        google-api-python-client==1.6.2 \
-        httplib2==0.10.3 \
-        h5py==2.7.1 \
-        ipykernel==4.8.2 \
-        ipywidgets==7.2.1 \
-        jinja2==2.8 \
-        jsonschema==2.6.0 \
-        matplotlib==2.1.2 \
-        mock==2.0.0 \
-        nltk==3.2.1 \
-        notebook==5.6.0 \
-        numpy==1.14.0 \
-        oauth2client==2.2.0 \
-        pandas-gbq==0.3.0 \
-        pandas==0.22.0 \
-        pandocfilters==1.4.2 \
-        pillow==5.0.0 \
-        pip==18.0 \
-        plotly==1.12.5 \
-        psutil==4.3.0 \
-        pygments==2.1.3 \
-        python-dateutil==2.5.0 \
-        python-snappy==0.5.1 \
-        pytz==2018.4 \
-        pyzmq==17.1.0 \
-        requests==2.18.4 \
-        scikit-image==0.13.0 \
-        scikit-learn==0.19.1 \
-        scipy==1.0.0 \
-        seaborn==0.7.0 \
-        six==1.11.0 \
-        statsmodels==0.8.0 \
-        sympy==0.7.6.1 \
-        tornado==4.5.1 \
-        widgetsnbextension==3.2.1 \
-        xgboost==0.6a2 && \
+    conda create --yes --quiet --name $PYTHON_3_ENV python=3.6 \
+        crcmod \
+        dask \
+        dill \
+        google-api-python-client \
+        httplib2 \
+        h5py \
+        ipykernel \
+        ipywidgets \
+        jinja2 \
+        jsonschema \
+        matplotlib \
+        mock \
+        nltk \
+        notebook \
+        numpy \
+        oauth2client \
+        pandas-gbq \
+        pandas \
+        pandocfilters \
+        pillow \
+        pip \
+        plotly \
+        psutil \
+        pygments \
+        python-dateutil \
+        python-snappy \
+        pytz \
+        pyzmq \
+        requests \
+        scikit-image \
+        scikit-learn \
+        scipy \
+        seaborn \
+        six \
+        statsmodels \
+        sympy \
+        tornado \
+        widgetsnbextension \
+        xgboost && \
 # Install Python3 packages that aren't available or up-to-date in Conda.
     source activate $PYTHON_3_ENV && \
     pip install --quiet -U --upgrade-strategy only-if-needed --no-cache-dir \
@@ -275,7 +275,7 @@ RUN if [ -d /datalab/lib/pydatalab/.git ]; then \
 # Set up correct paths for nbconvert
     mkdir -p /datalab/nbconvert && \
     cp -R /usr/local/share/jupyter/nbextensions/gcpdatalab/* /datalab/nbconvert && \
-    ln -s $DATALAB_CONDA_DIR/envs/$PYTHON_3_ENV/lib/python3.5/site-packages/notebook/static/custom/custom.css /datalab/nbconvert/custom.css
+    ln -s $DATALAB_CONDA_DIR/envs/$PYTHON_3_ENV/lib/python3.6/site-packages/notebook/static/custom/custom.css /datalab/nbconvert/custom.css
 
 COPY config/py2-kernel.json $DATALAB_CONDA_DIR/envs/$PYTHON_3_ENV/share/jupyter/kernels/python2/kernel.json
 COPY config/py3-kernel.json $DATALAB_CONDA_DIR/envs/$PYTHON_3_ENV/share/jupyter/kernels/python3/kernel.json
